@@ -3,28 +3,26 @@ using UnityEngine;
 public class TrashScript : MonoBehaviour
 {
     Rigidbody rb;
-    float spd = 10f;
+    GameObject truck;
+    Vector3 initPos;
 
-    void Awake()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.AddForce(-transform.forward * spd, ForceMode.Impulse);
+        truck = GameObject.FindWithTag("Truck");
+        initPos = transform.position;
+        gameObject.SetActive(false);
     }
-
-    //private void Update()
-    //{
-    //    if (transform.position.y < 0)
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //}
 
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.CompareTag("Finish"))
         {
-            Destroy(gameObject);
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            transform.position = initPos;
+            truck.SendMessage("ReAddTrash", gameObject);
+            gameObject.SetActive(false);
         }
     }
-
 }
